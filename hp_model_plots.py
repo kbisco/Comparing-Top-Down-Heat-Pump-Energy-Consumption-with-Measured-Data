@@ -2,9 +2,6 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import os
-os.chdir('/Users/kbiscoch/Documents/Research_remote/GitHub/hp_proj1/researchletter_plots')
-
 
 T_ref = 18.333
 x = np.linspace(T_ref,(120-32)*5/9)
@@ -30,20 +27,6 @@ intrcpts_h_R410a_F  = np.array(intrcpts_h_R410a_F)
 intrcpts_h_R410a_C = intrcpts_h_R410a_F + (160/5) * coeff_h_R410a_F
 intrcpts_h_R410a_C = intrcpts_h_R410a_C.tolist()
 
-coeff_c_R32 = [-0.0922,-0.0718,-0.0736,-0.0744]
-names_c_R32 = ["ATMO_1","ATMO_2","ATMO_3","ATMO_4"]
-intrcpts_c_R32 = [13.224,10.490,10.323,10.365]
-coeff_h_R32 = [0.0263,0.0218,0.0210,0.0207]
-names_h_R32 = ["ATMO_1_h","ATMO_2_h","ATMO_3_h","ATMO_4_h"]
-intrcpts_h_R32 = [2.0219,1.9564,1.7460,1.7332]
-
-coeff_c_DF = [-0.03587224,-0.03438607,-0.03449955,-0.03480641,-0.03294711]
-names_c_DF = ["DF1","DF2","DF3","DF4","DF5"]
-intrcpts_c_DF = [7.14939359,6.92641333,6.90018524,7.10030725,6.76392126]
-coeff_h_DF = [0.04563655,0.03822836,0.0339339,0.04007679,0.0387436]
-names_h_DF = ["DF1_h","DF2_h","DF3_h","DF4_h","DF5_h"]
-intrcpts_h_DF = [1.44828783,1.76293939,1.82040643,1.79173888,1.77795695]
-
 colors = ["","","","","","","","","","","","","","","","","","",]
 
 plt.figure(1)
@@ -62,40 +45,7 @@ plt.grid(alpha=0.15)
 plt.savefig('R410a_hpmodels_plot.eps')
 plt.savefig('R410a_hpmodels_plot.png', dpi=600)
 
-# plt.legend()
-
 plt.figure(2)
-for (c,i,name) in zip(coeff_c_R32, intrcpts_c_R32,names_c_R32):
-    k = x * c + i
-    plt.plot(x,k)
-
-for (c,i,name) in zip(coeff_h_R32, intrcpts_h_R32,names_h_R32):
-    k = x_heating * c + i
-    plt.plot(x_heating,k)
-
-plt.title("R32 Heat Pumps")
-plt.xlabel("Temperature (F)")
-plt.ylabel("COP")
-plt.grid(alpha=0.15)
-plt.savefig('R32.png', dpi=600)
-
-
-plt.figure(3)
-for (c,i,name) in zip(coeff_c_DF, intrcpts_c_DF,names_c_DF):
-    k = x * c + i
-    plt.plot(x,k)
-
-for (c,i,name) in zip(coeff_h_DF, intrcpts_h_DF,names_h_DF):
-    k = x_heating * c + i
-    plt.plot(x_heating,k)
-
-plt.title("Dual Fuel Heat Pumps")
-plt.xlabel("Temperature (F)")
-plt.ylabel("COP")
-plt.grid(alpha=0.15)
-plt.savefig('DF.png', dpi=600)
-
-plt.figure(4)
 for (c,i,name) in zip(coeff_c_R410a_C, intrcpts_c_R410a_C, names_c_R410a):
     k = x * c + i
     if(name != "HL"):
@@ -114,5 +64,3 @@ plt.title("R410A Heat Pumps")
 plt.xlabel("Temperature (Celsius)")
 plt.ylabel("COP")
 plt.grid(alpha=0.15)
-# plt.savefig('R410a_hpmodels_plot_testbold.eps')
-plt.savefig('R410a_hpmodels_plot_testbold.tiff', dpi=600)
