@@ -1,0 +1,11 @@
+"Retail sales of electricity"
+"https://www.eia.gov/electricity/data/browser/#/topic/5?agg=0,1&geo=00008&endsec=8&linechart=~~~~~&columnchart=ELEC.SALES.IN-RES.M&map=ELEC.SALES.IN-RES.M&freq=M&start=201001&end=201012&ctype=linechart&ltype=pin&rtype=s&maptype=0&rse=0&pin="
+"Thu Oct 13 2022 18:29:04 GMT-0400 (Eastern Daylight Time)"
+"Source: U.S. Energy Information Administration"
+"description","units","source key","Jan 2010","Feb 2010","Mar 2010","Apr 2010","May 2010","Jun 2010","Jul 2010","Aug 2010","Sep 2010","Oct 2010","Nov 2010","Dec 2010"
+"Retail sales of electricity","million kilowatthours",,,,,,,,,,,,,
+"United States",,"ELEC.SALES.US-ALL.M",,,,,,,,,,,,
+"East North Central",,"ELEC.SALES.ENC-ALL.M",,,,,,,,,,,,
+"Indiana",,"ELEC.SALES.IN-ALL.M",,,,,,,,,,,,
+"Indiana : all sectors",,"ELEC.SALES.IN-ALL.M",,,,,,,,,,,,
+"Indiana : residential","million kilowatthours","ELEC.SALES.IN-RES.M",3906,3198,2707,1915,2209,3045,3845,3754,2574,2044,2335,3528
