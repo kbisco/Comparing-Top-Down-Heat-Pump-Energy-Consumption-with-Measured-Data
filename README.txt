@@ -31,4 +31,5 @@ Plotting estimated heat pump electricity demand
   hp_elecdemand_plots.py
 Plotting estimated heat pump electricity demand versus Nanogrid House data
   NanogridHouseVSmodel_plot.py
+  (Note: Nanogrid House data is not public and therefore not included in this repository)
   
