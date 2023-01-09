@@ -23,9 +23,11 @@ Construction of electricity demand model
   elec_demand_IN.py
 Heat pump model
   hp_model.py
-Thermal comfort demand calculations
+Thermal comfort demand calculation
   thermalcomfort_demand_IN.py
-Plotting heat pummp model
+Nanogrid House daily heat pump electricity demand calculations
+  hp_elecdemand_Nanogrid_daily.py
+Plotting heat pump model
   hp_model_plots.py
 Plotting estimated heat pump electricity demand 
   hp_elecdemand_plots.py
