@@ -15,6 +15,8 @@ import requests
 import os
 import json
 
+os.chdir('/Users/kbiscoch/Documents/Research_remote/GitHub/Comparing-Top-Down-Heat-Pump-Energy-Consumption-with-Measured-Data')
+
 ct_temps_np = np.loadtxt('ct_temps_IN_2010.gz', delimiter = ',') # Load census tract temperature data from mult_days_areal_interp.py
 ct_temps_np[1:,:] = ct_temps_np[1:,:] - 273.15 # Celsius
 days_in_month = np.array([31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]) # Set up number of days in each month
@@ -126,9 +128,8 @@ print(heatOil)
 
     
 A = np.column_stack((A0,A1))
-# these shouldn't be hard coded in 
 # EIA uses MMcf, Waite uses MMbtu
-b_ng = np.array(ng)*1037 #np.array([30877, 24542, 14592, 6144, 4395, 2659, 2412, 2494, 2427, 5133, 14191, 28547]) * 1037 # mmbtu 
+b_ng = np.array(ng)*1037
 print(b_ng)
 b_scale = np.sum(b_ng) + prop + heatOil #2619439.65 + 17282000 # i couldn't find these numbers on the eia api 
 b_scale = b_scale / np.sum(b_ng)
