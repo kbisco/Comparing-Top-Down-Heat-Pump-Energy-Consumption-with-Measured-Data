@@ -9,7 +9,11 @@ Created on Tue Aug  2 11:04:34 2022
 import numpy as np
 import pandas as pd
 import censusdata
+#from eiapy import Series
 from scipy.optimize import lsq_linear
+import requests
+import os
+import json
 
 ct_temps_np = np.loadtxt('ct_temps_IN_2010.gz', delimiter = ',') # Load census tract temperature data from mult_days_areal_interp.py
 ct_temps_np[1:,:] = ct_temps_np[1:,:] - 273.15 # Celsius
@@ -87,18 +91,55 @@ const = np.multiply(m2_total[:,1],ff_perc[:,0])
 for month, days in enumerate(days_in_month):
     term = np.sum(np.multiply(const.T, deltaT_sum[month,:]))
     A1[month] = term
+
+   
+f = open('eiaToken.json')
+API_KEY = json.load(f)['token']
+
+def getEIAdata(link, variable, version):
+    if version ==2:
+        broken=link.split('?')
+        url2 = broken[0] + '?api_key=' + API_KEY + '&' + broken[1]
+        response = requests.get(url2)
+        x = response.json()
+        y = x['response']
+        z = y['data']
+        output = [d[variable] for d in z]
+        output.reverse()
+    else:
+        broken=link.split('?api_key=YOUR_API_KEY_HERE&')
+        url2 = broken[0] + '?api_key=' + API_KEY + '&' + broken[1]
+        response = requests.get(url2)
+        x = response.json()
+        y = x['series']
+        z = y[0]['data']
+        z2 = np.array(z)
+        output = int(z2[np.where(z2[:,0] == variable)[0][0],1])*1000
+    return output
+    
+ng = getEIAdata('https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[duoarea][]=SIN&facets[series][]=N3010IN2&start=2010-01&end=2010-12&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000', 'value', 2)
+
+prop = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.PQRCB.IN.A', '2010', 1)
+print(prop)
+heatOil = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.DFRCB.IN.A', '2010', 1)
+print(heatOil)
+
     
 A = np.column_stack((A0,A1))
+# these shouldn't be hard coded in 
 # EIA uses MMcf, Waite uses MMbtu
-b_ng = np.array([30877, 24542, 14592, 6144, 4395, 2659, 2412, 2494, 2427, 5133, 14191, 28547]) * 1037 # mmbtu 
-b_scale = np.sum(b_ng) + 2619439.65 + 17282000 
+b_ng = np.array(ng)*1037 #np.array([30877, 24542, 14592, 6144, 4395, 2659, 2412, 2494, 2427, 5133, 14191, 28547]) * 1037 # mmbtu 
+print(b_ng)
+b_scale = np.sum(b_ng) + prop + heatOil #2619439.65 + 17282000 # i couldn't find these numbers on the eia api 
 b_scale = b_scale / np.sum(b_ng)
 b = b_scale * b_ng
 lsq_result = lsq_linear(A, b)
 print(lsq_result)
 print("A is", A)
 #%% Saving coefficients multiplied by use percentages
+print(lsq_result['x'])
+weight2_ct = ff_perc[:,0] * lsq_result['x'][1]
+print(weight2_ct)
 
-weight2_ct = ff_perc[:,0] * 7.60632189e-06
+print(ff_perc[:,0])
 np.savetxt("heat_weight_ff_INct.csv", weight2_ct, delimiter=",")
-
