@@ -17,6 +17,14 @@ def tc_energy_IN_debug(year, DC):
     ct_temps_data = np.loadtxt('ct_temps_IN_'+str(year)+'.gz', delimiter = ',')
     ct_temps_data = ct_temps_data[:, ct_temps_data[0].argsort()]
     ct_temps_np = ct_temps_data[1:,:] - 273.15
+    ac_age_df = pd.read_excel('AC_age_EIA.xlsx') # housing units in millions
+    ac_age = np.array(ac_age_df.iloc[24:26,1])    
+    furnace_age_df = pd.read_excel('furnace_age_EIA.xlsx') # housing units in millions
+    furnace_age = np.array(furnace_age_df.iloc[16:18,1], dtype=float)
+    furnace_age = np.around(furnace_age, 6)
+    furnace_energystar_df = pd.read_excel('furnace_shipments_energystar.xlsx') # from 2007-2010
+    furnace_energystar = np.array(furnace_energystar_df.iloc[:,1])
+    furnace_energystar = round(np.sum(furnace_energystar) * 10**-6, 6) # shipments in millions
     
     # weights are already multiplied by percentage of homes with elec heat, elec cool, and ff heat
     cool_weight_elec_ct = np.loadtxt("cool_weight_elec_INct.csv", delimiter=",")
@@ -41,14 +49,14 @@ def tc_energy_IN_debug(year, DC):
     elec_demand_heating =  heat_weight_elec_ct * deltaT_heat
     
     #%% ff efficiency assumption
-    ff_efficiency = 0.8 # assumes all ff heating equip has 80% eff
+    ff_efficiency = ((furnace_age[0] + furnace_age[1] - furnace_energystar) * 0.78 + furnace_energystar * 0.9) / (furnace_age[0] + furnace_age[1])
     
     #%% elec heating efficiency assumption (HPs, electric resistance heaters (erh))
     erh_efficiency = 1
     elec_heating_efficiency = erh_efficiency 
     
     #%% elec cooling efficiency assumption
-    seer_wa = (13 * 12.75 + 10 * 4.3) / (12.75 + 4.3) # SEER weighted average by age of AC equipment
+    seer_wa = (13 * ac_age[1] + 10 * ac_age[0]) / (ac_age[1] + ac_age[0]) # SEER weighted average by age of AC equipment
     seer_wa = seer_wa * 0.293071 # convert from btu/w to w/w
     
     elec_cooling_efficiency = seer_wa
@@ -69,7 +77,7 @@ def tc_energy_IN_debug(year, DC):
     tc_elec_demand_kwh = tc_elec_demand_cooling_kwh + tc_elec_demand_heating_kwh
     tc_heating_demand_kwh = tc_elec_demand_heating_kwh + tc_ff_demand_heating_kwh
     tc_total_demand_kwh = tc_elec_demand_kwh + tc_ff_demand_heating_kwh
-    
+     
     if DC == True:
         DC_tract = np.where(ct_temps_data[0,:] == 18157005400)
         tc_total_demand_kwh = tc_total_demand_kwh[:,DC_tract[0]]
