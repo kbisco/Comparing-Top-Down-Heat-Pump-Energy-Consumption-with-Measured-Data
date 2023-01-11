@@ -9,7 +9,7 @@ Created on Tue Aug  2 11:04:34 2022
 import numpy as np
 import pandas as pd
 import censusdata
-#from eiapy import Series
+#from eiapy import Series 
 from scipy.optimize import lsq_linear
 import requests
 import os
@@ -94,7 +94,6 @@ for month, days in enumerate(days_in_month):
     term = np.sum(np.multiply(const.T, deltaT_sum[month,:]))
     A1[month] = term
 
-   
 f = open('eiaToken.json')
 API_KEY = json.load(f)['token']
 
@@ -121,17 +120,27 @@ def getEIAdata(link, variable, version):
     
 ng = getEIAdata('https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=monthly&data[0]=value&facets[duoarea][]=SIN&facets[series][]=N3010IN2&start=2010-01&end=2010-12&sort[0][column]=period&sort[0][direction]=desc&offset=0&length=5000', 'value', 2)
 
-prop = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.PQRCB.IN.A', '2010', 1)
-print(prop)
-heatOil = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.DFRCB.IN.A', '2010', 1)
-print(heatOil)
+# prop = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.PQRCB.IN.A', '2010', 1)
+# print(prop)
+# heatOil = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.DFRCB.IN.A', '2010', 1)
+# print(heatOil)
 
-    
+fuel_oil_df = pd.read_csv('residential_distillate_fuel_oil.csv')
+fuel_oil_IN = np.array(fuel_oil_df.loc[fuel_oil_df['area-name']=='IN', 'value'])
+fuel_oil_IN = fuel_oil_IN * 1000 * 137381 * 10**-6 # mmbtu
+
+kerosene_df = pd.read_csv('residential_kerosene.csv')
+kerosene_IN = np.array(kerosene_df.loc[kerosene_df['area-name']=='IN', 'value'])
+kerosene_IN = kerosene_IN * 1000 * 137381 * 10**-6 # mmbtu
+
+propane_df = pd.read_csv('residential_propane.csv')
+propane_IN = np.array(propane_df.loc[propane_df['stateId']=='IN', 'value'])
+propane_IN = propane_IN * 1000 * 42 * 91452 * 10**-6 # mmbtu
 A = np.column_stack((A0,A1))
 # EIA uses MMcf, Waite uses MMbtu
 b_ng = np.array(ng)*1037
 print(b_ng)
-b_scale = np.sum(b_ng) + prop + heatOil #2619439.65 + 17282000 # i couldn't find these numbers on the eia api 
+b_scale = np.sum(b_ng) + propane_IN + fuel_oil_IN + kerosene_IN #2619439.65 + 17282000 # i couldn't find these numbers on the eia api 
 b_scale = b_scale / np.sum(b_ng)
 b = b_scale * b_ng
 lsq_result = lsq_linear(A, b)
