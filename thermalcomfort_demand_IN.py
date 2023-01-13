@@ -77,6 +77,7 @@ def tc_energy_IN(year, DC):
     tc_elec_demand_kwh = tc_elec_demand_cooling_kwh + tc_elec_demand_heating_kwh
     tc_heating_demand_kwh = tc_elec_demand_heating_kwh + tc_ff_demand_heating_kwh
     tc_total_demand_kwh = tc_elec_demand_kwh + tc_ff_demand_heating_kwh
+    bauec = ff_demand_heating + elec_demand_cooling + elec_demand_heating
      
     if DC == True:
         DC_tract = np.where(ct_temps_data[0,:] == 18157005400)
@@ -85,13 +86,14 @@ def tc_energy_IN(year, DC):
         tc_ff_demand_heating_kwh = tc_ff_demand_heating_kwh[:,DC_tract[0]]
         tc_heating_demand_kwh = tc_heating_demand_kwh[:,DC_tract[0]]
         tc_elec_demand_cooling_kwh = tc_elec_demand_cooling_kwh[:,DC_tract[0]]
+        bauec = bauec[:, DC_tract[0]]
         # tc_elec_demand_cooling_kwh_seerwa = tc_elec_demand_cooling_kwh_seerwa[:,DC_tract[0]]
     
     df = np.column_stack((tc_total_demand_kwh, tc_elec_demand_kwh, tc_ff_demand_heating_kwh, tc_heating_demand_kwh, tc_elec_demand_cooling_kwh))
     
-    ec_df = pd.DataFrame(columns = ['total_ec','total_elec_ec', 
+    tc_df = pd.DataFrame(columns = ['total_ec','total_elec_ec', 
                                     'total_ff_ec', 'total_heating_ec', 'total_cooling_ec'],
                          data = df)
     
-    return ec_df
+    return tc_df, bauec
 
