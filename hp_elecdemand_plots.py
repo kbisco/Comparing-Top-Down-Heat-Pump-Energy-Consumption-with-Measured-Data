@@ -16,15 +16,19 @@ from thermalcomfort_demand_IN import tc_energy_IN
 import hp_model as m
 
 # #%% Get thermal comfort for DC house
-ec_df20 = tc_energy_IN(2020, DC=True)
-ec_df21 = tc_energy_IN(2021, DC=True)
-ec_df22 = tc_energy_IN(2022, DC=True)
-ec_df_all = pd.concat([ec_df20, ec_df21, ec_df22], axis = 0, ignore_index=True)
+tc_df20, bauec20 = tc_energy_IN(2020, DC=True)
+tc_df21, bauec21 = tc_energy_IN(2021, DC=True)
+tc_df22, bauec22 = tc_energy_IN(2022, DC=True)
+tc_df_all = pd.concat([tc_df20, tc_df21, tc_df22], axis = 0, ignore_index=True)
+bauec_all = np.row_stack((bauec20,bauec21,bauec22))
 
-ec_df_all.to_csv('tc_allyears_hourly.csv')
+tc_df_all.to_csv('tc_allyears_hourly.csv')
+np.savetxt('bauec_total_allyears_hourly.csv', bauec_all, delimiter=',')
 
 #%% Load previously saved thermal comfort data for DC House
-ec_df_all = pd.read_csv("tc_allyears_hourly.csv", delimiter = ',', index_col=0)
+tc_df_all = pd.read_csv("tc_allyears_hourly.csv", delimiter = ',', index_col=0)
+bauec = np.loadtxt('bauec_total_allyears_hourly.csv', delimiter=',')
+bauec = np.transpose(np.array(bauec, ndmin=2))
 
 #%% Calculate heat pump energy consumption for DC house
 def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
@@ -106,7 +110,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
                     start = step
                 return month_ave
             y = monthly_ave(hpec, 35)
-
+            y2 = monthly_ave(bauec[0:25584]*208, 35)
             # y = np.zeros((35,5))
             # for column in range(6):
             #     y_temp = monthly_ave(hpec[:,column], 35)
@@ -189,6 +193,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
     elif xaxis == 'temp':
         x = temp
         xlab = 'Temperature [Celsius]'
+        # y2 = np.loadtxt('total_monthly_hpec_avedata.csv', delimiter = ',')
         
         plt.figure(1)
         plt.scatter(x, y['total_ec'])
@@ -213,11 +218,23 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         ax = plt.gca()
         ax.set_ylim([0, 5])
         # plt.savefig(hp + 'hpmodel_coolingecVStemp.png', dpi=600)
+        
+        plt.figure(4)
+        plt.scatter(x, y['total_ec'], label='Ave Heat Pump Model', c='tab:orange')
+        plt.scatter(x, y2, label='Business as Usual', c='tab:purple')
+        plt.legend()
+        plt.xlabel(xlab)
+        plt.ylabel('Average Monthly Energy Consumption [kWh]')
+        ax = plt.gca()
+        ax.set_ylim([0, 7])
+        plt.savefig('figure7.png', dpi=600, bbox_inches='tight')
+        plt.savefig('figure7.eps', bbox_inches='tight')
+    # return y2['total_ec']
 
     
 #%% 
-hpec_IN(year='allyears', tc_data=ec_df_all, DC=True, hp='ave', timestep='month', xaxis='temp') 
-hpec_IN(year='allyears', tc_data=ec_df_all, DC=True, hp='ave', timestep='month', xaxis='time') 
+hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='temp')
+hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='time') 
 
-hpec_IN(year='allyears', tc_data=ec_df_all, DC=True, hp='test', timestep='month', xaxis='temp') 
-hpec_IN(year='allyears', tc_data=ec_df_all, DC=True, hp='test', timestep='month', xaxis='time') 
+hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='test', timestep='month', xaxis='temp') 
+hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='test', timestep='month', xaxis='time') 

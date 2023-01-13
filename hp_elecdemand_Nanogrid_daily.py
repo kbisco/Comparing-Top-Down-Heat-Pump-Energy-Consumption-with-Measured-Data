@@ -12,11 +12,11 @@ e_total_heating = []
 e_total_cooling = []
 coeffs = m.get_coeffs_c(1)
 ## Averaged coeffs
-# coeffs_heating = coeffs[1]
-# coeffs_cooling = coeffs[0]
+coeffs_heating = coeffs[1]
+coeffs_cooling = coeffs[0]
 ## Measured data coeffs
-coeffs_cooling = [-0.08118, 5.8698]
-coeffs_heating = [0.07686000000000001, 2.456]
+# coeffs_cooling = [-0.08118, 5.8698]
+# coeffs_heating = [0.07686000000000001, 2.456]
 
 temp_values0 = np.loadtxt("ct_temps_IN_2020.gz", delimiter = ",")
 temp_values1 = np.loadtxt("ct_temps_IN_2021.gz", delimiter = ",")[1:,:]
@@ -51,7 +51,6 @@ cooling_COP = (coeffs_cooling[0] * (temp_values_cooling[1:,column_DC_house[0]] -
 
 cooling_adjusted_data_house = (cooling_raw_demand / cooling_COP) * 208
 
-   
 e_daily_heat = []
 e_daily_cool = []
 
