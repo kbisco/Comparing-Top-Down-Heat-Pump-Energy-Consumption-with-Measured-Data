@@ -18,7 +18,7 @@ testdata_model = np.loadtxt("total_daily_hpec_testdata.csv", delimiter = ",")
 
 time = pd.date_range(start=datetime.date(2020,8,25), end=datetime.date(2022,3,22)).tolist()
 fig, ax = plt.subplots()
-ax.plot(time, testdata_model[237:812], label='Test Model Output')
+# ax.plot(time, testdata_model[237:812], label='Test Model Output')
 ax.plot(time, avedata_model[237:812], label='Ave Model Output', c='tab:orange')
 ax.plot(time, DC_data, label = "Nanogrid House Data", c='tab:green')
 plt.xticks(rotation = 45)
@@ -26,6 +26,9 @@ plt.xticks(rotation = 45)
 plt.legend()
 plt.xlabel("Time")
 plt.ylabel("Daily Heat Pump Electricity (kWh)")
+
+plt.savefig('figure5.png', dpi=600, bbox_inches='tight')
+plt.savefig('figure5.eps', bbox_inches='tight')
 
 #%% Error Calculation
 def root_mean_squared_error(true, pred):
