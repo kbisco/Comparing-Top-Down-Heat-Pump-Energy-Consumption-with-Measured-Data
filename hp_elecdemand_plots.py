@@ -11,14 +11,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from itertools import chain
 import os
-os.chdir('/Users/kbiscoch/Documents/Research_remote/GitHub/hp_proj1')
-from thermalcomfort_energdemandIN_debug import tc_energy_IN_debug
-import model as m
+os.chdir('/Users/kbiscoch/Documents/Research_remote/GitHub/Comparing-Top-Down-Heat-Pump-Energy-Consumption-with-Measured-Data')
+from thermalcomfort_demand_IN import tc_energy_IN
+import hp_model as m
 
 # #%% Get thermal comfort for DC house
-ec_df20 = tc_energy_IN_debug(2020, DC=True)
-ec_df21 = tc_energy_IN_debug(2021, DC=True)
-ec_df22 = tc_energy_IN_debug(2022, DC=True)
+ec_df20 = tc_energy_IN(2020, DC=True)
+ec_df21 = tc_energy_IN(2021, DC=True)
+ec_df22 = tc_energy_IN(2022, DC=True)
 ec_df_all = pd.concat([ec_df20, ec_df21, ec_df22], axis = 0, ignore_index=True)
 
 ec_df_all.to_csv('tc_allyears_hourly.csv')
@@ -191,6 +191,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         xlab = 'Temperature [Celsius]'
         
         plt.figure(1)
+        plt.scatter(x, y['total_ec'])
         plt.xlabel(xlab)
         plt.ylabel('Average Monthly Heat Pump Electricity [kWh]')
         ax = plt.gca()
@@ -198,6 +199,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         # plt.savefig(hp + 'hpmodel_totalecVStemp.png', dpi=600)
        
         plt.figure(2)
+        plt.scatter(x, y['total_heating_ec'])
         plt.xlabel(xlab)
         plt.ylabel('Heating Energy Consumption [kWh]')
         ax = plt.gca()
@@ -205,6 +207,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         # plt.savefig(hp + 'hpmodel_heatingecVStemp.png', dpi=600)
        
         plt.figure(3)
+        plt.scatter(x, y['total_cooling_ec'])
         plt.xlabel(xlab)
         plt.ylabel('Cooling Energy Consumption [kWh]')
         ax = plt.gca()

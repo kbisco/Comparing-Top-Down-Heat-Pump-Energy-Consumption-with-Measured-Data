@@ -6,7 +6,7 @@ Created on Tue Nov 29 18:07:10 2022
 @author: kbiscoch
 """
 
-def tc_energy_IN_debug(year, DC):
+def tc_energy_IN(year, DC):
 ## Convert business as usual (BAU) electricity demand to heat pump electricity demand
     #%% Load packages
     import pandas as pd

@@ -125,17 +125,17 @@ ng = getEIAdata('https://api.eia.gov/v2/natural-gas/cons/sum/data/?frequency=mon
 # heatOil = getEIAdata('http://api.eia.gov/series/?api_key=YOUR_API_KEY_HERE&series_id=SEDS.DFRCB.IN.A', '2010', 1)
 # print(heatOil)
 
-fuel_oil_df = pd.read_csv('residential_distillate_fuel_oil.csv')
+fuel_oil_df = pd.read_csv('residential_distillate_fuel_oil.csv') # unit is thousand gallons, not MGAL
 fuel_oil_IN = np.array(fuel_oil_df.loc[fuel_oil_df['area-name']=='IN', 'value'])
-fuel_oil_IN = fuel_oil_IN * 1000 * 137381 * 10**-6 # mmbtu
+fuel_oil_IN = fuel_oil_IN * 1000 / 42 * 5.775 # mmbtu
 
-kerosene_df = pd.read_csv('residential_kerosene.csv')
+kerosene_df = pd.read_csv('residential_kerosene.csv') # unit is thousand gallons, not MGAL
 kerosene_IN = np.array(kerosene_df.loc[kerosene_df['area-name']=='IN', 'value'])
-kerosene_IN = kerosene_IN * 1000 * 137381 * 10**-6 # mmbtu
+kerosene_IN = kerosene_IN * 1000 / 42 * 5.670 # mmbtu
 
-propane_df = pd.read_csv('residential_propane.csv')
+propane_df = pd.read_csv('residential_propane.csv') # thousand barrels
 propane_IN = np.array(propane_df.loc[propane_df['stateId']=='IN', 'value'])
-propane_IN = propane_IN * 1000 * 42 * 91452 * 10**-6 # mmbtu
+propane_IN = propane_IN * 1000 * 3.841 # mmbtu 
 A = np.column_stack((A0,A1))
 # EIA uses MMcf, Waite uses MMbtu
 b_ng = np.array(ng)*1037
