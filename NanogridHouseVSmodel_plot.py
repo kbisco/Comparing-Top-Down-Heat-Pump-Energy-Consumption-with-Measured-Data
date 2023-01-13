@@ -33,7 +33,7 @@ def root_mean_squared_error(true, pred):
     sum_squared_error = np.sum(squared_error)
     rmse_loss = np.sqrt(sum_squared_error / true.size)
     return rmse_loss
-rmse = root_mean_squared_error(everything[237:812], DC_data) 
+rmse = root_mean_squared_error(avedata_model[237:812], DC_data) 
 
 def relative_root_mean_squared_error(true, pred):
     num = np.sum(np.square(true - pred))
@@ -41,4 +41,4 @@ def relative_root_mean_squared_error(true, pred):
     squared_error = num/den
     rrmse_loss = np.sqrt(squared_error)
     return rrmse_loss
-rrmse = relative_root_mean_squared_error(everything[237:812], DC_data) 
+rrmse = relative_root_mean_squared_error(avedata_model[237:812], DC_data) 
