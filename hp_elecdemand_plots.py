@@ -110,7 +110,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
                     start = step
                 return month_ave
             y = monthly_ave(hpec, 35)
-            y2 = monthly_ave(bauec[0:25584]*208, 35)
+            y2 = monthly_ave(bauec[0:25584], 35)
             # y = np.zeros((35,5))
             # for column in range(6):
             #     y_temp = monthly_ave(hpec[:,column], 35)
@@ -224,15 +224,16 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         plt.scatter(x, y2, label='Business as Usual', c='tab:purple')
         plt.legend()
         plt.xlabel(xlab)
-        plt.ylabel('Average Monthly Energy Consumption [kWh]')
+        plt.ylabel('Heat Pump Electricity Consumption [kWh/sqft]')
         ax = plt.gca()
-        ax.set_ylim([0, 7])
-        plt.savefig('figure7.png', dpi=600, bbox_inches='tight')
-        plt.savefig('figure7.eps', bbox_inches='tight')
+        # ax.set_ylim([0, 7])
+        plt.savefig('figure4.png', dpi=600, bbox_inches='tight')
+        plt.savefig('figure4.eps', bbox_inches='tight')
     # return y2['total_ec']
 
     
 #%% 
+hpec_IN(year='allyears', tc_data=tc_df_all, DC=False, hp='ave', timestep='month', xaxis='temp')
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='temp')
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='time') 
 
