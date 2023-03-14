@@ -227,15 +227,28 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         plt.ylabel('Heat Pump Electricity Consumption [kWh/sqft]')
         ax = plt.gca()
         # ax.set_ylim([0, 7])
-        plt.savefig('figure4.png', dpi=600, bbox_inches='tight')
-        plt.savefig('figure4.eps', bbox_inches='tight')
+        # plt.savefig('figure4.png', dpi=600, bbox_inches='tight')
+        # plt.savefig('figure4.eps', bbox_inches='tight')
+        return y2, y, x
+    # print('calculating max & min differences')
+    # diffs = y2 - y['total_ec']
+    # print('avg. monthly temp', x[diffs.argmin()], 'energy min.', min(diffs))
+    # print('avg. monthly temp', x[diffs.argmax()], 'energy max', max(diffs))
     # return y2['total_ec']
 
     
 #%% 
-hpec_IN(year='allyears', tc_data=tc_df_all, DC=False, hp='ave', timestep='month', xaxis='temp')
+[y2,y,x]=hpec_IN(year='allyears', tc_data=tc_df_all, DC=False, hp='ave', timestep='month', xaxis='temp')
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='temp')
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='time') 
 
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='test', timestep='month', xaxis='temp') 
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='test', timestep='month', xaxis='time') 
+
+#%%
+print('calculating max & min differences')
+diffs = y2 - np.array(y['total_ec'], ndmin=2).T
+diffs_min_ind = np.unravel_index(diffs.argmin(), diffs.shape)
+diffs_max_ind = np.unravel_index(diffs.argmax(), diffs.shape)
+print('avg. monthly temp', x[diffs_min_ind[0],diffs_min_ind[1]], 'energy min.', min(diffs))
+print('avg. monthly temp', x[diffs_max_ind[0],diffs_max_ind[1]], 'energy max', max(diffs))
