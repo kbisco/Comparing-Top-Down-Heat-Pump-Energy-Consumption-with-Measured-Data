@@ -110,21 +110,27 @@ intrcpts_h_R410a_C = intrcpts_h_R410a_F + (160/5) * coeff_h_R410a_F
 intrcpts_h_R410a_C = intrcpts_h_R410a_C.tolist()
 
 #%%
-# coeff_c_ave_C = np.mean(coeff_c_R410a_C) # -0.10036
-# coeff_h_ave_C = np.mean(coeff_h_R410a_C) # 0.0633925
-# intrcpts_c_ave_C = np.mean(intrcpts_c_R410a_C) # 7.15168
-# intrcpts_h_ave_C = np.mean(intrcpts_h_R410a_C) # 3.28264
+coeff_c_ave_C = np.mean(coeff_c_R410a_C) # -0.10036
+coeff_h_ave_C = np.mean(coeff_h_R410a_C) # 0.0633925
+intrcpts_c_ave_C = np.mean(intrcpts_c_R410a_C) # 7.15168
+intrcpts_h_ave_C = np.mean(intrcpts_h_R410a_C) # 3.28264
 
-coeff_c_ave_F = np.mean(coeff_c_R410a_F) # -0.05575555555555556
-coeff_h_ave_F = np.mean(coeff_h_R410a_F) # 0.03521809777777778
-intrcpts_c_ave_F = np.mean(intrcpts_c_R410a_F) # 8.93586111111111
-intrcpts_h_ave_F = np.mean(intrcpts_h_R410a_F) # 2.155658692610143
+# coeff_c_ave_F = np.mean(coeff_c_R410a_F) # -0.05575555555555556
+# coeff_h_ave_F = np.mean(coeff_h_R410a_F) # 0.03521809777777778
+# intrcpts_c_ave_F = np.mean(intrcpts_c_R410a_F) # 8.93586111111111
+# intrcpts_h_ave_F = np.mean(intrcpts_h_R410a_F) # 2.155658692610143
 
 #%% 
 # x_cool = np.concatenate((temp1_cool,temp2_cool,temp3_cool,temp4_cool,temp5_cool),axis=0)
 # x_heat = np.concatenate((temp1_heat,temp2_heat,temp3_heat,temp4_heat,temp5_heat),axis=0)
-estimates_cool = coeff_c_ave_F * cool_data[:,0] + intrcpts_c_ave_F
-estimates_heat =  coeff_h_ave_F * heat_data[:,0] + intrcpts_h_ave_F
+# estimates_cool = coeff_c_ave_F * cool_data[:,0] + intrcpts_c_ave_F
+# estimates_heat =  coeff_h_ave_F * heat_data[:,0] + intrcpts_h_ave_F
+cool_data_C = cool_data
+cool_data_C[:,0] = (cool_data_C[:,0] - 32) * (5/9)
+heat_data_C = heat_data
+heat_data_C[:,0] = (heat_data_C[:,0] - 32) * (5/9)
+estimates_cool = coeff_c_ave_C * cool_data_C[:,0] + intrcpts_c_ave_C
+estimates_heat =  coeff_h_ave_C * heat_data_C[:,0] + intrcpts_h_ave_C
 
 def relative_root_mean_squared_error(true, pred):
     num = np.sum(np.square(true - pred)) # rss
@@ -155,10 +161,10 @@ def CI_intrcpt(intrcpt,true,pred,x,alpha,n,p):
     bound2 = intrcpt - t*se
     return bound1, bound2
 
-cool_slope_CI = CI_slope(coeff_c_ave_F,cool_data[:,1],estimates_cool,cool_data[:,0],0.05,3328,1)
+cool_slope_CI = CI_slope(coeff_c_ave_C,cool_data_C[:,1],estimates_cool,cool_data_C[:,0],0.05,3328,1)
 
-cool_intrcpt_CI = CI_intrcpt(intrcpts_c_ave_F,cool_data[:,1],estimates_cool,cool_data[:,0],0.05,3328,1)
+cool_intrcpt_CI = CI_intrcpt(intrcpts_c_ave_C,cool_data_C[:,1],estimates_cool,cool_data_C[:,0],0.05,3328,1)
 
-heat_slope_CI = CI_slope(coeff_h_ave_F,heat_data[:,1],estimates_heat,heat_data[:,0],0.05,6090,1)
+heat_slope_CI = CI_slope(coeff_h_ave_C,heat_data_C[:,1],estimates_heat,heat_data_C[:,0],0.05,6090,1)
 
-heat_intrcpt_CI = CI_intrcpt(intrcpts_h_ave_F,heat_data[:,1],estimates_heat,heat_data[:,0],0.05,6090,1)
+heat_intrcpt_CI = CI_intrcpt(intrcpts_h_ave_C,heat_data_C[:,1],estimates_heat,heat_data_C[:,0],0.05,6090,1)
