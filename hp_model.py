@@ -25,13 +25,14 @@ def consumption_R410a(temp, demand, unit='f'):
     EC = demand / COP
     return EC
 
-#Returns (cooling, heating) coeffs (slope, intercept at 65F) for each tech
+#%%Returns (cooling, heating) coeffs for each tech (not adjusted for deltaT)
 #1 - R410a
 
-def get_coeffs_f(choice): # fahrenheit
+def get_coeffs_f_temp(choice): # fahrenheit
     if choice == 1:
         return [-0.05575555555555556,8.93586111111111], [0.03521809777777778,2.155658692610143]
 
-def get_coeffs_c(choice): # celsius
+def get_coeffs_c_temp(choice): # celsius
     if choice == 1:
         return [-0.10036,7.15168334], [0.063392576,3.2826378214990313]
+

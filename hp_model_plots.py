@@ -153,7 +153,8 @@ for count, value in enumerate(hp_names):
 ax2.set_xlabel("Temperature (Celsius)", fontsize=18)
 ax2.set_ylabel("COP", fontsize=18)
 ax2.grid(alpha=0.15)
-fig2.savefig('hp_model_labeled.png', dpi=600)
+# fig2.savefig('hp_model_labeled.png', dpi=600)
+fig2.savefig('hp_model_labeled.eps', bbox_inches='tight')
 #%%
 spacing = np.linspace(0.8,4.04)
 nums = np.arange(0,18) 

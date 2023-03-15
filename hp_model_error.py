@@ -7,7 +7,8 @@ Created on Mon Mar 13 15:58:12 2023
 """
 import os
 import numpy as np
-import pandas as pd
+import scipy.stats
+# import seaborn as sns
 
 os.chdir('/Users/kbiscoch/Documents/Research_remote/GitHub/Comparing-Top-Down-Heat-Pump-Energy-Consumption-with-Measured-Data/hp_model_data')
 col_names = ['temp', 'COP']
@@ -126,7 +127,7 @@ estimates_cool = coeff_c_ave_F * cool_data[:,0] + intrcpts_c_ave_F
 estimates_heat =  coeff_h_ave_F * heat_data[:,0] + intrcpts_h_ave_F
 
 def relative_root_mean_squared_error(true, pred):
-    num = np.sum(np.square(true - pred))
+    num = np.sum(np.square(true - pred)) # rss
     den = np.sum(np.square(pred))
     squared_error = num/den
     rrmse_loss = np.sqrt(squared_error)
@@ -134,3 +135,30 @@ def relative_root_mean_squared_error(true, pred):
 
 rrmse_cool = relative_root_mean_squared_error(cool_data[:,1],estimates_cool) # 24.74%
 rrmse_heat = relative_root_mean_squared_error(heat_data[:,1],estimates_heat) # 38.46%
+
+#%% 
+def CI_slope(slope,true,pred,x,alpha,n,p):
+    rse_2 = np.sum(np.square(true-pred)) / (n-2)
+    x_bar = np.mean(x)
+    se = np.sqrt(rse_2 * (1/n + x_bar**2 / np.sum(np.square(x-x_bar))))
+    t = scipy.stats.t.isf(alpha / 2, n - p - 1)
+    bound1 = slope + t*se
+    bound2 = slope - t*se
+    return bound1, bound2
+
+def CI_intrcpt(intrcpt,true,pred,x,alpha,n,p):
+    rse_2 = np.sum(np.square(true-pred)) / (n-2)
+    x_bar = np.mean(x)
+    se = np.sqrt(rse_2 / np.sum(np.square(x-x_bar)))
+    t = scipy.stats.t.isf(alpha / 2, n - p - 1)
+    bound1 = intrcpt + t*se
+    bound2 = intrcpt - t*se
+    return bound1, bound2
+
+cool_slope_CI = CI_slope(coeff_c_ave_F,cool_data[:,1],estimates_cool,cool_data[:,0],0.05,3328,1)
+
+cool_intrcpt_CI = CI_intrcpt(intrcpts_c_ave_F,cool_data[:,1],estimates_cool,cool_data[:,0],0.05,3328,1)
+
+heat_slope_CI = CI_slope(coeff_h_ave_F,heat_data[:,1],estimates_heat,heat_data[:,0],0.05,6090,1)
+
+heat_intrcpt_CI = CI_intrcpt(intrcpts_h_ave_F,heat_data[:,1],estimates_heat,heat_data[:,0],0.05,6090,1)

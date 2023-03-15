@@ -36,7 +36,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         tc_data = tc_data * 208
     
     if hp == 'ave':
-        coeffs = m.get_coeffs_c(1)
+        coeffs = m.get_coeffs_c_temp(1)
         coeffs_heating = coeffs[1]
         coeffs_cooling = coeffs[0]
     elif hp == 'test':
