@@ -227,7 +227,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
         plt.ylabel('Heat Pump Electricity Consumption [kWh/sqft]')
         ax = plt.gca()
         # ax.set_ylim([0, 7])
-        # plt.savefig('figure4.png', dpi=600, bbox_inches='tight')
+        plt.savefig('figure4.tiff', dpi=600, bbox_inches='tight')
         # plt.savefig('figure4.eps', bbox_inches='tight')
         return y2, y, x
     # print('calculating max & min differences')
@@ -238,6 +238,7 @@ def hpec_IN(year, tc_data, DC, hp, timestep, xaxis):
 
     
 #%% 
+hpec_IN(year='allyears', tc_data=tc_df_all, DC=False, hp='ave', timestep='month', xaxis='temp')
 [y2,y,x]=hpec_IN(year='allyears', tc_data=tc_df_all, DC=False, hp='ave', timestep='month', xaxis='temp')
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='temp')
 hpec_IN(year='allyears', tc_data=tc_df_all, DC=True, hp='ave', timestep='month', xaxis='time') 

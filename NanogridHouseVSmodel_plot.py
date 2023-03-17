@@ -27,8 +27,8 @@ plt.legend()
 plt.xlabel("Time")
 plt.ylabel("Daily Heat Pump Electricity (kWh)")
 
-plt.savefig('figure5.png', dpi=600, bbox_inches='tight')
-plt.savefig('figure5.eps', bbox_inches='tight')
+plt.savefig('figure5.tiff', dpi=600, bbox_inches='tight')
+# plt.savefig('figure5.eps', bbox_inches='tight')
 
 #%% Error Calculation
 def root_mean_squared_error(true, pred):
