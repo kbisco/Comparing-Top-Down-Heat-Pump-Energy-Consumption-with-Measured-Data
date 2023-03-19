@@ -158,7 +158,8 @@ print(rrmse_heat)
 def CI_slope(slope,true,pred,x,alpha,n,p):
     rse_2 = np.sum(np.square(true-pred)) / (n-2) # cool: 0.498295849, heat: 1.0993
     x_bar = np.mean(x) # cool: 33.781, heat: -9.568
-    se = np.sqrt(rse_2 * (1/n + x_bar**2 / np.sum(np.square(x-x_bar)))) # cool: 0.06685, heat: 0.01874
+    se = np.sqrt(rse_2 / np.sum(np.square(x-x_bar)))
+     # cool: 0.06685, heat: 0.01874
     t = scipy.stats.t.isf(alpha / 2, n - p - 1) # 1.96
     bound1 = slope + t*se # cool: 0.0307, heat: 0.1001297
     bound2 = slope - t*se # cool: -0.231, heat: 0.02665
@@ -167,7 +168,7 @@ def CI_slope(slope,true,pred,x,alpha,n,p):
 def CI_intrcpt(intrcpt,true,pred,x,alpha,n,p):
     rse_2 = np.sum(np.square(true-pred)) / (n-2)
     x_bar = np.mean(x)
-    se = np.sqrt(rse_2 / np.sum(np.square(x-x_bar)))
+    se = np.sqrt(rse_2 * (1/n + x_bar**2 / np.sum(np.square(x-x_bar))))
     t = scipy.stats.t.isf(alpha / 2, n - p - 1)
     bound1 = intrcpt + t*se
     bound2 = intrcpt - t*se
@@ -196,11 +197,11 @@ def confInts(fMod, cMod, true, alpha, p):
     x_barF = np.mean(true[:,0])
     x_barC = np.mean((true[:,0]-32)*5/9)
     # print(x_barC) # cool: 33.781
-    seFs = np.sqrt(rse_2F * (1/true.shape[0] + x_barF**2 / np.sum(np.square(true[:,0]-x_barF))))
-    seCs = np.sqrt(rse_2C * (1/true.shape[0] + x_barC**2 / np.sum(np.square(((true[:,0]-32)*5/9)-x_barC))))
+    seFi = np.sqrt(rse_2F * (1/true.shape[0] + x_barF**2 / np.sum(np.square(true[:,0]-x_barF))))
+    seCi = np.sqrt(rse_2C * (1/true.shape[0] + x_barC**2 / np.sum(np.square(((true[:,0]-32)*5/9)-x_barC))))
     # print(seCs) # cool: 0.06685
-    seFi = np.sqrt(rse_2F / (np.sum(np.square(true[:,0]-x_barF))))
-    seCi = np.sqrt(rse_2C / np.sum(np.square(((true[:,0]-32)*5/9)-x_barC)))
+    seFs = np.sqrt(rse_2F / (np.sum(np.square(true[:,0]-x_barF))))
+    seCs = np.sqrt(rse_2C / np.sum(np.square(((true[:,0]-32)*5/9)-x_barC)))
     t = scipy.stats.t.isf(alpha / 2, true.shape[0] - p - 1)
     bound1Fs = fMod[1] + t*seFs
     bound2Fs = fMod[1] - t*seFs
@@ -214,7 +215,7 @@ def confInts(fMod, cMod, true, alpha, p):
     outBoundsC = [bound1Ci, bound2Ci, bound1Cs, bound2Cs]
     return outBoundsF, outBoundsC
 
-b1, b20 = confInts(np.average(fDatacool, axis=0), np.average(cDatacool, axis=0), cool_data, 0.05, 1)
+b1, b2 = confInts(np.average(fDatacool, axis=0), np.average(cDatacool, axis=0), cool_data, 0.05, 1)
 print(b2, np.average(cDatacool, axis=0))
 
 b1, b2 = confInts(np.average(fDataheat, axis=0), np.average(cDataheat, axis=0), heat_data, 0.05, 1)
