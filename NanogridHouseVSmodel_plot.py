@@ -45,3 +45,4 @@ def relative_root_mean_squared_error(true, pred):
     rrmse_loss = np.sqrt(squared_error)
     return rrmse_loss
 rrmse2 = relative_root_mean_squared_error(DC_data,avedata_model[237:812]) 
+
